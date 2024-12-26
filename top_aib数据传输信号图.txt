@@ -1,0 +1,26 @@
+MOSI
+
+{signal: [
+  {name:"avmm_clk",wave: 'n..............................'},
+  {name:"osc_clk",wave: 'n..............................'},
+  {name:"m1_i_osc_clk",wave: 'n..............................'},
+  {name:"m1_data_in_f",wave: '23...2...4.2...................',data:['0','data1','0','data2','0']},
+  {name:"m1_m_wr_clk",wave: '2222222222222222222222222222222',data:['0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff']},
+  {name:"s1_gen1_data_out_f",wave: '2..................3...2...4.2.',data:['8000.......8000_0000_0000_0000_0000','data1','8000....','data2','8000...']},
+  {name:"s1_m_rd_clk",wave: '2222222222222222222222222222222',data:['0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0']},
+  {name:"usermode_en",wave: 'h..............................'},
+]}
+
+
+MISO
+{signal: [
+  {name:"avmm_clk",wave: 'n....................................'},
+  {name:"osc_clk",wave: 'n....................................'},
+  {name:"usermode_en",wave: 'h....................................'},
+  {name:"s1_gen1_data_in_f",wave: '23...2...4.2.........................',data:['0','data1','0','data2','0']},
+  {name:"s1_m_wr_clk",wave: '2222222222222222222222222222222222222',data:['0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff']},
+  {name:"m1_i_osc_clk",wave: 'n....................................'},
+  {name:"m1_data_out_f",wave: '2........................3...2...4.2.',data:['XXXX.......8000_0000_0000_0000_0000','data1','XXXX....','data2','XXXX...']},
+  {name:"m1_m_rd_clk",wave: '2222222222222222222222222222222222222',data:['0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff','0','ff_ffff']},
+]}  
+  
