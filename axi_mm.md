@@ -1,6 +1,6 @@
 # axi_mm_a32_d128模块功能描述
 
-### top_aib模块
+### [top_aib][26]模块
 1. **模块架构图**:
     ![top_aib模块架构图](top_aib.png)
 2. **模块功能**:
@@ -18,7 +18,7 @@
 4. **信号**:
     |  信号   |I/O| 描述  |
     |  :----:  | :----:  |:----:  |
-    | avmm_clk | I |  Avalon MM 时钟信号 |
+    | avmm_clk | I |  Avalon MM 接口时钟信号 |
     | osc_clk  | I |  Mac 接口的leader振荡器时钟,接入intf接口后未被使用 | 
     |**主机信号**|
     | m1_data_in_f | I | 外部传入数据，接入到dut_master1的FIFO模式数据输入通道data_in_f |
@@ -126,7 +126,7 @@
     | ms_rx_transfer_en |O| 未定义 MAIB_REV1DOT1 时的leader的RX通道完成校准，准备接收数据 |
     | sl_rx_transfer_en |O| 未定义 MAIB_REV1DOT1 时的follower的RX通道完成校准，准备接收数据 |
     |**AVMM/mac接口只在内部连接故省略,若无定义SL_AIB_GEN1 dut_slave1的信号参考dut_master1信号**|
-#### dut_emXXXX_XXXX_
+#### dut_emib子模块
 1. **模块功能**:
     - 该模块是AIB主从通道对接模块，根据不同的主机和从机模式选择不同的对接模块进行实例化
 2. **宏定义配置**:
@@ -170,7 +170,7 @@
 
 
 
-### aximm_d128_h2h_wrapper_top模块
+### [aximm_d128_h2h_wrapper_top][25]模块
 1. **模块架构图**:
     ![aximm_d128_h2h_wrapper_top](aximm_d128_h2h_wrapper_top.png)
 2. **模块功能**:
@@ -179,6 +179,7 @@
     | 参数 | 描述 |
     | :----: | :----: |
     | AXI_CHNL_NUM | 当参数为1时为单通道模式，当参数不为为1时为双通道模式。当参数为2时实例化子模块ca用于多通道的数据对齐，时钟同步和FIFO状态检测|
+    | SYNC_FIFO | 是否开启ca子模块的同步FIFO |
 4. **信号**:
     |  信号   |I/O| 描述  |
     |  :----:  | :----:  |:----:  |
@@ -199,6 +200,8 @@
     | rx_din_L(F)_phy2_ca | I | 物理层到leader(follower)的ca子模块的接收数据 |
     | ca_L(F)_align_done | O | ca_leader(follower)子模块对齐完成标志信号 |
     | ca_L(F)_align_error | O | ca_leader(follower)子模块对齐异常信号 |
+    | leader ar aw w r b 通道信号|  | 接入顶层aximm_leader_app发送端的axi信号，作为其接收端 |
+    | follower ar aw w r b 通道信号 | | 接入顶层aximm_follower_app接收端的axi信号，作为其发送端| 
     | leader与follower 的 ar aw w r b 通道的信号不做介绍| |[axi中文手册][18]| |
 
 #### aximm_leader子模块
@@ -218,7 +221,7 @@
     | init_r(b)_credit | I | 初始化信用信号,用于r(b)数据流控制 |
     | tx_phy0(1) | O | 物理层发送数据通道0(1),当为双通道时开启通道1,数据宽度为80位 | 
     | rx_phy0(1) | I | 物理层接收数据通道0(1),当为双通道时开启通道1,数据宽度为80位 | 
-    | AR信号，aw信号，w信号，r信号，b信号不做介绍| | [axi中文手册][18]|
+    | AR信号，aw信号，w信号，r信号，b信号不做介绍| | axi信号发送端，接入顶层的aximm_d128_h2h_wrapper_top[axi中文手册][18]|
     | tx_ar(aw/w)_debug_status | O | 发送端ar(aw/w)通道状态信号,用于调试,但是这3个信号在该模块中未接入顶层信号 |
     | rx_r(b)_debug_status | O | 接收端(r/b)通道状态信号,用于调试,但是这2个信号在该模块中未接入顶层信号 |    
     | m_gen2_mode | I | 因该是主机GEN2模式，但是该模块里面接入该信号的子模块中这个信号空接 |
@@ -241,7 +244,7 @@
     | init_ar(ar/w)_credit | I | 初始化信用信号,用于ar(aw/w)数据流控制 |
     | tx_phy0(1) | O | 物理层发送数据通道0(1),当为双通道时开启通道1,数据宽度为80位 | 
     | rx_phy0(1) | I | 物理层接收数据通道0(1),当为双通道时开启通道1,数据宽度为80位 | 
-    | AR信号，aw信号，w信号，r信号，b信号不做介绍| |[axi中文手册][18]|
+    | AR信号，aw信号，w信号，r信号，b信号不做介绍| |axi信号接收端，接入顶层的axi_128_h2h_wrapper_top[axi中文手册][18]|
     | tx_ar(aw/w)_debug_status | O | 发送端ar(aw/w)通道状态信号,用于调试,但是这3个信号在该模块中未接入顶层信号 |
     | rx_r(b)_debug_status | O | 接收端(r/b)通道状态信号,用于调试,但是这2个信号在该模块中未接入顶层信号 |
     | m_gen2_mode | I | 因该是主机GEN2模式，但是该模块里面接入该信号的子模块中这个信号空接 |
@@ -285,7 +288,7 @@
     | fifo_empty | O | FIFO是否已空,空接 |
     | fifo_pempty| O| FIFO是否近空,空接 |
 
-### aximm_leader_app模块
+### [aximm_leader_app][23]模块
 1. **模块架构图**:
     ![aximm_leader_app](aximm_leader_app.png)
     **注：**
@@ -343,7 +346,7 @@
     | axist_valid | O | AXI通道有效信号|
     | axist_rdy | I | AXI通道就绪信号|
 
-### aximm_follower_app模块
+### [aximm_follower_app][24]模块
 1. **模块架构图**:
     ![aximm_follower_app](aximm_follower_app.png)
     **注：**
@@ -376,7 +379,7 @@
     | data_in_first(last)_valid | O | 指示 data_in_first(last) 信号输出的数据是否有效 |
     | AR信号，aw信号，w信号，r信号，b信号不做介绍| |[axi中文手册][18]|
 
-### syncfifo_mem1r1w模块
+### [syncfifo_mem1r1w][20]模块
 1. **模块架构图**:
     ![syncfifo_mem1r1w](syncfifo_mem1r1w.png)
     **注：**
@@ -410,6 +413,179 @@
     | rdaddr| I | 读地址由aximm_follower_app模块传入| 
     | rddata | O | 读数据传入aximm_follower_app模块|
 
+### [axi_mm_patchkr_top][22]模块
+1. **模块架构图**:
+    ![axi_mm_patchkr_top](axi_mm_patchkr_top.png)
+    **注：**
+    | 代码块 | 介绍 |
+    | :----: | :----: |
+    |err_count | 校验错误的数据计数 |
+    | start | 控制着启动与停止校验 |
+    | rx_fifo_empty | 检测读fifo是否为空 |
+    | cntuspatt_en | 对cntuspatt_en信号先通过双寄存器同步再拆分为上升沿cntuspatt_en_fe和下降沿cntuspatt_en_re两个信号|
+    | qout | 对patchkr_en信号翻转，延迟和异或后产生qout信号 |
+    | patchkr_out | 输出校验结果 |
+2. **模块功能**:
+    - 负责校验AXI数据流，通过对比aximm_leader_app发送的期望数据与aximm_follower_app接收的数据进行校验，并输出校验结果。
+3. **参数与宏定义配置**: 
+    | 参数 | 描述 |
+    | :----: | :----: |
+    | AXI_CHNL_NUM | AXI通道数量 | 
+    | LEADER_MODE | 未被使用 |
+    | FOLLOWER_MODE | 未被使用 |
+4. **信号**:
+    |  信号   |I/O| 描述  |
+    |  :----:  | :----:  | :----:  |
+    | rdclk | I | 读操作时钟 | 
+    | wrclk | I | 写操作时钟 | 
+    | rst_n | I | 低电平有效复位信号 |
+    | patchkr_en | I | 数据校验使能信号，启动数据校验 |
+    | patgen_cnt | I | 数据长度，由顶层axi_mm_csr接入 | 
+    | patgen_din | I | 校验数据输入，由aximm_leader_app的期望输出数据接入 |
+    | patgen_din_wr | I | 数据写使能信号，由aximm_leader_app接入 |
+    | cntuspatt_en | I | 决定何时开始校验以及错误计数 |
+    | chkr_fifo_full | O | 数据FIFO已满信号 |
+    | axist_valid | I |  axi接收数据有效信号，由aximm_follower_app接入 |
+    | axist_rcv_data | I | axi接收到的数据，由aximm_follower_app接入 |
+    | axist_tready| I | axi数据接收准备信号，由aximm_d128_h2h_wrapper_top接入  |
+    | patchkr_out | O | 校验结果输出 |
+
+#### [asyncfifo][21]子模块
+1. **模块功能**:
+    - 异步FIFO存储器,用于处理来自两个时钟域的写入和读取请求。被实例化为接收FIFO和校验FIFO
+2. **参数与宏定义配置**: 
+    | 参数 | 描述 |
+    | :----: | :----: |
+    | AXI_CHNL_NUM | AXI通道数量 | 
+    | LEADER_MODE | 未被使用 |
+    | FOLLOWER_MODE | 未被使用 |
+3. **信号**:
+    |  信号   |I/O| 描述  |
+    |  :----:  | :----:  | :----:  |
+    | clk_write | I | 写时钟信号 |
+    | rst_write_n | I | 写端口低电平有效复位信号 |
+    | clk_read | I | 读时钟信号 |
+    | rst_read_n | I | 读端口低电平有效复位信号 |
+    | rddata | O | 读取的数据 |
+    | wrdata| I | 写入的数据 |
+    | write_push | I | 写入使能信号|
+    | read_pop| I | 读出使能信号 |
+    | rd_soft_reset | I | 读端口软件复位信号，用于复位读指针 |
+    | wr_soft_reset | I | 写端口软件复位信号，用于复位写指针 |
+    | rd_numfilled | O | 当前FIFO中存储的数据块数,空接  |
+    | wr_numempty | O | 当前FIFO中的剩余空位置数,空接 |
+    | wr_full | O | FIFO是否已满信号 |
+    | rd_empty | O | FIFO是否为空信号 | 
+    | wr_overflow_pulse | O | 写溢出信号,空接 |
+    | rd_underflow_pulse | O | 读空信号,即在FIFO为空时读取,空接 |
+
+### [axi_mm_csr][27]模块
+1. **模块架构图**:
+    ![axi_mm_csr](axi_mm_csr.png)
+2. **模块功能**:
+    - aximm寄存器模块，内部含jtag到AVMM桥接器,通过地址解码和读写控制信号，访问AVMM总线设备或主机内部寄存器。还有aximm寄存器控制模块，用于配置寄存器和axi总线与链路状态监控
+3. **参数与宏定义配置**: 
+    | 参数 | 描述 |
+    | :----: | :----: |
+    | AXI_CHNL_NUM | AXI通道数量 | 
+4. **信号**:
+    |  信号   |I/O| 描述  |
+    |  :----:  | :----:  | :----:  |
+    |  clk | I | 时钟信号 |
+    | rst_n | I | 低电平有效复位信号 |
+    | master_address | I | 主机写地址由顶层i_wr_addr信号接入  | 
+    | master_readdata| O | 主机接收的读数据，接入顶层的o_master_readdata信号|
+    | master_read | I | 主机读请求信号，由顶层的i_rden信号接入| 
+    | master_write | I | 主机写请求信号，由顶层的i_wren信号接入 |
+    | master_writedata | I | 主机写数据信号，由顶层的i_wrdata信号接入 |
+    | master_waitrequest | O | 主机等待请求信号，表示AVMM端准备完成 |
+    | master_readdatavalid | O |主机接收的读数据有效信号 |
+    | master_byteenable | O | 字节使能信号，用AVMM总线访问中的字节控制。顶层空接，jtag2avmm_bridge子模块内部也未使用 |
+    | data_out_first(last)| I | 顶层aximm_leader_app发送的第一组(最后一组)数据 |
+    | data_out_first(last)_valid | I |  顶层aximm_leader_app发送的第一组(最后一组)数据是否有效 |
+    | data_in_first(last)| I | 顶层aximm_follower_app接收的第一组(最后一组)数据 |
+    | data_in_first(last)_valid | I |  顶层aximm_follower_app接收的第一组(最后一组)数据是否有效 |
+    | o_delay_x(y/z)_value | O | X(Y/Z)方向延迟值 |
+    | chkr_pass | I | 校验通过信号 | 
+    | align_error | I | 顶层aximm_d128_h2h_wrapper_top从机对齐错误信号 |
+    | f2l_align_error | I |  顶层aximm_d128_h2h_wrapper_top主机对齐错误信号 |
+    | ldr_tx(rx)_online | I | 顶层top_aib的leader发送(接收)通道状态信号 |
+    | fllr_tx(rx)_online | I | 顶层top_aib的follower发送(接收)通道状态信号 |
+    | read_complete | I | 顶层aximm_leader_app读完成信号 |
+    | write_complete| I | 顶层aximm_leader_app写完成信号 |
+    | axist_rstn_out | O | AXI流复位信号 |
+    | aximm_wr | O | AXI主机写请求信号|
+    | aximm_rd | O | AXI主机读请求信号 | 
+    | aximm_rw_length | O | AXI主机读写长度 |
+    | aximm_rw_burst | O | AXI主机突发类型 |
+    | aximm_rw_size | O | AXI主机传输大小 |
+    | aximm_rw_addr | O | AXI主机读写地址 | 
+
+
+#### [jtag2avmm_bridge][28]子模块
+1. **模块功能**:
+    - jtag到AVMM桥接器,通过地址解码和读写控制信号，访问AVMM总线设备或主机内部寄存器
+2. **信号**:
+    |  信号   |I/O| 描述  |
+    |  :----:  | :----:  | :----:  |
+    | clk | I | 时钟信号 |
+    | rst_n | I | 低电平有效复位信号 | 
+    | mgmt_clk | I | 模块内部未被使用 |
+    | mgmt_clk_reset_n | I | 模块内部未被使用 | 
+    | master_address | I | 主机发送的访问地址信号 |
+    | master_readdata | O | 主机接收的读数据 | 
+    | master_read | I | 主机读请求信号 | 
+    | master_write | I | 主机写请求信号 | 
+    | master_writedata |  I | 主机写入数据 | 
+    | master_waitrequest | O | 主机等待请求信号，表示AVMM端准备完成 | 
+    | master_readdatavalid | O | 主机接收的读数据有效信号 |
+    | master_byteenable | O | 字节使能信号，用于AVMM总线访问中的字节控制。模块内部未使用 |
+    | wr_rd_addr | O | 状态寄存器的读写地址 |
+    | wr_en | O | 状态寄存器写使能信号|
+    | rd_en | O | 状态寄存器读使能信号|
+    | wr_data| O | 状态寄存器写入数据 | 
+    | rd_data_in | I | 从状态寄存器读取的数据 |
+    | csr_rd_dvalid | I | rd_data_in读数据有信号 |
+
+#### [mm_csr_ctrl][29]子模块
+1. **模块功能**:
+    - aximm寄存器控制模块，用于配置寄存器和axi总线与链路状态监控
+2. **参数与宏定义配置**: 
+    | 参数 | 描述 |
+    | :----: | :----: |
+    | AXI_CHNL_NUM | AXI通道数量 | 
+3. **信号**:
+    |  信号   |I/O| 描述  |
+    |  :----:  | :----:  | :----:  |
+    | clk  | I | 时钟信号 | 
+    | rst_n | I | 低电平有效复位信号 |
+    | wr_rd_addr | I | 读写寄存器地址，即要访问的寄存器地址 |
+    | wr_en | I | 写使能信号 | 
+    | rd_en | I | 读使能信号 |
+    | wr_data | I | 写入寄存器的数据 | 
+    | rd_datain | O | 从寄存器读出的数据 |
+    | rd_dvalid | O | rd_datain读数据有效信号 |
+    | o_delay_x(y/z)_value | O | X(Y/Z)方向延迟值 |
+    | chkr_pass | I | 校验通过信号 | 
+    | align_error | I | 顶层aximm_d128_h2h_wrapper_top从机对齐错误信号 |
+    | f2l_align_error | I |  顶层aximm_d128_h2h_wrapper_top主机对齐错误信号 |
+    | ldr_tx(rx)_online | I | 顶层top_aib的leader发送(接收)通道状态信号 |
+    | fllr_tx(rx)_online | I | 顶层top_aib的follower发送(接收)通道状态信号 |
+    | read_complete | I | 顶层aximm_leader_app读完成信号 |
+    | write_complete| I | 顶层aximm_leader_app写完成信号 |
+    | data_out_first(last)| I | 顶层aximm_leader_app发送的第一组(最后一组)数据 |
+    | data_out_first(last)_valid | I |  顶层aximm_leader_app发送的第一组(最后一组)数据是否有效 |
+    | data_in_first(last)| I | 顶层aximm_follower_app接收的第一组(最后一组)数据 |
+    | data_in_first(last)_valid | I |  顶层aximm_follower_app接收的第一组(最后一组)数据是否有效 |
+    | axist_rstn_out | O | AXI流复位信号 |
+    | aximm_wr | O | AXI主机写请求信号|
+    | aximm_rd | O | AXI主机读请求信号 | 
+    | aximm_rw_length | O | AXI主机读写长度 |
+    | aximm_rw_burst | O | AXI主机突发类型 |
+    | aximm_rw_size | O | AXI主机传输大小 |
+    | aximm_rw_addr | O | AXI主机读写地址 | 
+
+
 [1]:https://github.com/chipsalliance/aib-phy-hardware/blob/master/v1.0/rev2/rtl/v1_master/c3aibadapt_wrap/rtl/aib_top_wrapper_v1m.sv
 [2]:https://github.com/chipsalliance/aib-phy-hardware/blob/master/v2.0/rev1.1/rtl/bca/src/rtl/aib_top/aib_phy_top.v
 [3]:https://github.com/chipsalliance/aib-phy-hardware/blob/master/v2.0/rev1/dv/emib/emib_ch_m1s2.sv
@@ -429,6 +605,13 @@
 [17]:https://github.com/chipsalliance/aib-protocols/blob/main/ca/rtl/ca.sv
 [18]:https://github.com/lizhirui/AXI_spec_chinese/blob/main/AXI%E6%80%BB%E7%BA%BF%E6%80%BB%E7%BB%93.md
 [19]:https://github.com/chipsalliance/aib-protocols/blob/main/axi4-mm/full_examples/common/axi_mm_patgen_top.v
-
-
-
+[20]:https://github.com/chipsalliance/aib-protocols/blob/main/common/rtl/syncfifo_mem1r1w.sv
+[21]:https://github.com/chipsalliance/aib-protocols/blob/main/common/rtl/asyncfifo.sv
+[22]:https://github.com/chipsalliance/aib-protocols/blob/main/axi4-mm/full_examples/common/axi_mm_patchkr_top.v
+[23]:https://github.com/chipsalliance/aib-protocols/blob/main/axi4-mm/full_examples/common/aximm_leader_app.v
+[24]:https://github.com/chipsalliance/aib-protocols/blob/main/axi4-mm/full_examples/common/aximm_follower_app.v
+[25]:https://github.com/chipsalliance/aib-protocols/blob/main/axi4-mm/full_examples/common/aximm_d128_h2h_wrapper_top.v
+[26]:https://github.com/chipsalliance/aib-protocols/blob/main/axi4-mm/full_examples/common/top_aib.sv
+[27]:https://github.com/chipsalliance/aib-protocols/blob/main/axi4-mm/full_examples/common/axi_mm_csr.v
+[28]:https://github.com/chipsalliance/aib-protocols/blob/main/axi4-mm/full_examples/common/mm_csr_ctrl.v
+[29]:https://github.com/chipsalliance/aib-protocols/blob/main/axi4-mm/full_examples/common/jtag2avmm_bridge.v
